@@ -1,11 +1,14 @@
-package ze_fernando.Microservices.models;
+package com.ze_fernando.Microservices.models;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.ze_fernando.Microservices.enums.MailStatus;
 
+import com.ms.email.enums.StatusEmail;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Data
 @Entity
