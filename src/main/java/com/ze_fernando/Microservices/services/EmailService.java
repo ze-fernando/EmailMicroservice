@@ -27,14 +27,15 @@ public class EmailService {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setEmailFrom(emailEmail.getFrom());
-            message.setEgetEmailTo(email.getEmailTo());
-            message.setgetSubject(email.getSubject());
+            message.setEmailTo(email.getEmailTo());
+            message.setSubject(email.getSubject());
             message.setBody(email.getBody());
             emailSender.send(message);
 
-            message.setStatus(MailStatus.DONE);
+            email.setStatus(MailStatus.DONE);
         } catch (MailException me) {
             email.setStatus(MailStatus.Error);
+            throw new RuntimeException("Error while sending email " + me);
         } finally {
             return emailRepository.save(email);
         }

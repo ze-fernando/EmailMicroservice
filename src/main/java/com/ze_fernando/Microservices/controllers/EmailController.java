@@ -18,10 +18,14 @@ public class EmailController {
 
     @PostMapping("/send-email")
     public ResponseEntity<EmailModel> sendEmail(@RequestBody @Valid EmailDto emailDto){
-        var emailModel = new EmailModel();
-        BeanUtils.copyPropeties(emailDto, emailModel);
-        emailService.sendEmail(emailModel);
+        try {
+            var emailModel = new EmailModel();
+            BeanUtils.copyProperties(emailDto, emailModel);
+            emailService.sendEmail(emailModel);
 
-        return new ResponseEntity<>(emailModel, HttpStatus.CREATED);
+            return new ResponseEntity<>(emailModel, HttpStatus.CREATED);
+        } catch (RuntimeException re) {
+            return new ResponseEntity<>("Failed to send email: " + re, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
