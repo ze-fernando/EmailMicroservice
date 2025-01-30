@@ -13,8 +13,6 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
-
 
 class EmailServicesTest {
 
@@ -31,11 +29,11 @@ class EmailServicesTest {
 
     @Test
     void sendEmailSuccess() {
-        EmailDto mail = new EmailDto();
+        EmailModel mail = new EmailModel();
         mail.setEmailFrom("test@domain.com");
         mail.setEmailTo("recipient@domain.com");
         mail.setSubject("Test Subject");
-        mail.setText("Test Body");
+        mail.setBody("Test Body");
 
         EmailModel mailModel = new EmailModel();
         mailModel.setStatus(MailStatus.DONE);
@@ -56,14 +54,14 @@ class EmailServicesTest {
         mail.setEmailFrom("test@domain.com");
         mail.setEmailTo("recipient@domain.com");
         mail.setSubject("Test Subject");
-        mail.setText("Test Body");
+        mail.setBody("Test Body");
 
         EmailModel mailModel = new EmailModel();
         mailModel.setStatus(MailStatus.ERROR);
 
-        when(emailRepository.save(any(EmailModel.class))).thenReturn(emailModel);
+        when(emailRepository.save(any(EmailModel.class))).thenReturn(mailModel);
 
-        EmailModel result = emailService.sendEmail(emailDto);
+        EmailModel result = emailService.sendEmail(mailModel);
 
         assertEquals(MailStatus.ERROR, result.getStatus());
         verify(emailRepository, times(1)).save(any(EmailModel.class));

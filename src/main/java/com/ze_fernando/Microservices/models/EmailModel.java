@@ -5,10 +5,15 @@ import java.time.LocalDateTime;
 
 import com.ze_fernando.Microservices.enums.MailStatus;
 
-import com.ms.email.enums.StatusEmail;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+
 import lombok.Data;
 
-import javax.persistence.*;
 
 @Data
 @Entity

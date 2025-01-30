@@ -1,21 +1,19 @@
 package com.ze_fernando.Microservices.dtos;
 
+import jakarta.annotation.Nonnull;
 import lombok.Data;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class EmailDto {
-
-    @NotBlank
-    @Email
+    
+    @Nonnull
     private String emailFrom;
-    @NotBlank
-    @Email
+    @Nonnull
     private String emailTo;
-    @NotBlank
+    @Nonnull
     private String subject;
-    @NotBlank
+    @Nonnull
     private String body;
 }

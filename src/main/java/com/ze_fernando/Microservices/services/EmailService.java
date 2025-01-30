@@ -5,10 +5,10 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ze_fernando.Microservices.enums.MailStatus;
 import com.ze_fernando.Microservices.models.EmailModel;
+import com.ze_fernando.Microservices.repositories.EmailRepository;
 
 import java.time.LocalDateTime;
 
@@ -21,23 +21,24 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
-    public EmailModel sendEmail(EmailModel email) {
-        email.setSendDate(LocalDateTime.now());
+    @SuppressWarnings("finally")
+    public EmailModel sendEmail(EmailModel emailModel) {
+        emailModel.setSendDate(LocalDateTime.now());
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setEmailFrom(emailEmail.getFrom());
-            message.setEmailTo(email.getEmailTo());
-            message.setSubject(email.getSubject());
-            message.setBody(email.getBody());
+            message.setFrom(emailModel.getEmailFrom());
+            message.setTo(emailModel.getEmailTo());
+            message.setSubject(emailModel.getSubject());
+            message.setText(emailModel.getBody());
             emailSender.send(message);
 
-            email.setStatus(MailStatus.DONE);
+            emailModel.setStatus(MailStatus.DONE);
         } catch (MailException me) {
-            email.setStatus(MailStatus.Error);
+            emailModel.setStatus(MailStatus.ERROR);
             throw new RuntimeException("Error while sending email " + me);
         } finally {
-            return emailRepository.save(email);
+            return emailRepository.save(emailModel);
         }
     }
 }

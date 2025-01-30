@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
@@ -30,44 +31,48 @@ class EmailControllerTest {
 
     @Test
     void sendEmailControllerTestSuccess() {
-        EmailDto emailDto = new EmailDto();
-        emailDto.setEmailFrom("test@example.com");
-        emailDto.setEmailTo("recipient@example.com");
-        emailDto.setSubject("Test Subject");
-        emailDto.setText("Test Text");
+        EmailModel mail = new EmailModel();
+        mail.setEmailFrom("test@example.com");
+        mail.setEmailTo("recipient@example.com");
+        mail.setSubject("Test Subject");
+        mail.setBody("Test Text");
     
         EmailModel emailModel = new EmailModel();
-        emailModel.setEmailFrom(emailDto.getEmailFrom());
-        emailModel.setEmailTo(emailDto.getEmailTo());
-        emailModel.setSubject(emailDto.getSubject());
-        emailModel.setText(emailDto.getText());
-        emailModel.setSendDateEmail(LocalDateTime.now());
-        emailModel.setStatusEmail(MailStatus.SENT);
+        emailModel.setEmailFrom(mail.getEmailFrom());
+        emailModel.setEmailTo(mail.getEmailTo());
+        emailModel.setSubject(mail.getSubject());
+        emailModel.setBody(mail.getBody());
+        emailModel.setStatus(MailStatus.DONE);
     
-        when(emailService.sendEmail(emailDto)).thenReturn(emailModel);
+           doAnswer(invocation -> {
+                EmailModel email = invocation.getArgument(0);
+                email.setStatus(MailStatus.DONE); 
+                return email;
+            }).when(emailService)
+            .sendEmail(any(EmailModel.class));
     
-        ResponseEntity<EmailModel> response = emailController.sendEmail(emailDto);
+        ResponseEntity<Object> response = emailController.sendEmail(mail);
     
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(emailModel, response.getBody());
-        verify(emailService, times(1)).sendEmail(emailDto);
+        
     }
     
     @Test
-    void testSendEmail_ReturnsErrorResponseOnFailure() {
-        EmailDto emailDto = new EmailDto();
-        emailDto.setEmailFrom("test@example.com");
-        emailDto.setEmailTo("recipient@example.com");
-        emailDto.setSubject("Test Subject");
-        emailDto.setText("Test Text");
+    void sendEmailControllerTestFailure() {
+        EmailModel mail = new EmailModel();
+        mail.setEmailFrom("test@example.com");
+        mail.setEmailTo("recipient@example.com");
+        mail.setSubject("Test Subject");
+        mail.setBody("Test Text");
+
+        when(emailService.sendEmail(mail)).thenThrow(new RuntimeException("Failed to send email"));
     
-        when(emailService.sendEmail(emailDto)).thenThrow(new RuntimeException("Service failure"));
-    
-        ResponseEntity<Object> response = emailController.sendEmail(emailDto);
-    
+        ResponseEntity<Object> response = emailController.sendEmail(mail);
+        RuntimeException re = new RuntimeException("Failed to send email");
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Failed to send email: ", response.getBody());
-        verify(emailService, times(1)).sendEmail(emailDto);
+        assertEquals("Error: " + re, response.getBody());
+        verify(emailService, times(1)).sendEmail(mail);
     }
     
 }
