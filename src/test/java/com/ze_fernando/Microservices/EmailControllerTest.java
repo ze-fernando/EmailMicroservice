@@ -1,5 +1,6 @@
-package com.ze_fernando.Microservices.controllers;
+package com.ze_fernando.Microservices;
 
+import com.ze_fernando.Microservices.controllers.EmailController;
 import com.ze_fernando.Microservices.dtos.EmailDto;
 import com.ze_fernando.Microservices.enums.MailStatus;
 import com.ze_fernando.Microservices.models.EmailModel;

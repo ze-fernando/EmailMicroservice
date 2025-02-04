@@ -1,9 +1,11 @@
-package com.ze_fernando.Microservices.services;
+package com.ze_fernando.Microservices;
 
 import com.ze_fernando.Microservices.dtos.EmailDto;
 import com.ze_fernando.Microservices.enums.MailStatus;
 import com.ze_fernando.Microservices.models.EmailModel;
 import com.ze_fernando.Microservices.repositories.EmailRepository;
+import com.ze_fernando.Microservices.services.EmailService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
